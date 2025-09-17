@@ -35,6 +35,7 @@ public class FileService {
         grievanceFile.setUserEmail(userEmail);
         grievanceFile.setUploadedAt(LocalDate.now());
         grievanceFile.setGrievance(grievance);
+        grievanceFile.setImage(file.getBytes());
 
         grievance.setLastUpdate(LocalDate.now());
         grievance.addFile(grievanceFile);

@@ -52,9 +52,8 @@ public class GrievanceService {
         try {
             grievance = grievanceRepository.save(grievance);
         } catch (Exception e) {
-            String message = "Can not save, recheck record.";
-            log.warn(message, e.getMessage());
-            throw new CustomException(message + e.getMessage());
+            log.warn(e.getMessage());
+            throw new CustomException(e.getMessage());
         }
         String message = "Complaint registered with unique id:" + grievance.getGrievanceId();
         log.info(message);
@@ -73,7 +72,13 @@ public class GrievanceService {
         } catch (Exception e) {
             throw new CustomException(e.getMessage());
         }
-        List<GrievanceResponse> grievanceResponses = new ArrayList<>(grievances.stream().map(grievancesMapper::toDto).toList());
+        List<GrievanceResponse> grievanceResponses = new ArrayList<>(grievances.stream().map(
+                grievance -> {GrievanceResponse dto = grievancesMapper.toDto(grievance);
+                    if (grievance.getGrievanceFile() != null) {
+                        dto.setImageUrls(grievance.getGrievanceFile());
+                    }
+                    return dto;}
+        ).toList());
         log.info("User fetched grievances");
         return grievanceResponses;
     }
@@ -107,13 +112,11 @@ public class GrievanceService {
             log.warn(message);
             throw new CustomException(message);
         }
-        grievance.setComplaintDescription(grievancerequest.getComplaintDescription() == null || grievancerequest.getComplaintDescription().length() == 0
+        grievance.setComplaintDescription(grievancerequest.getComplaintDescription() == null || grievancerequest.getComplaintDescription().isEmpty()
                 ? grievance.getComplaintDescription() : grievancerequest.getComplaintDescription());
 
-        grievance.setComplaintTitle(grievancerequest.getComplaintTitle() == null || grievancerequest.getComplaintTitle().length() == 0
+        grievance.setComplaintTitle(grievancerequest.getComplaintTitle() == null || grievancerequest.getComplaintTitle().isEmpty()
                 ? grievance.getComplaintTitle() : grievancerequest.getComplaintTitle());
-
-//        grievance.setAddress(grievancerequest.getAddress() == null ? grievance.getAddress(): grievancerequest.getAddress());
 
         grievance.setLastUpdate(LocalDate.now());
         try {

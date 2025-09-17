@@ -7,14 +7,12 @@ import io.nitishc.grievance_portal.exception.CustomException;
 import io.nitishc.grievance_portal.model.User;
 import io.nitishc.grievance_portal.repository.UserRepository;
 import io.nitishc.grievance_portal.util.OfficerMapper;
-import java.util.Collections;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.stream.Stream;
 
 @Service
 @Slf4j
@@ -76,7 +74,7 @@ public class AdminOfficerService {
         existingOfficer.setEmail(officer.getEmail() != null && !officer.getEmail().isEmpty() ? officer.getEmail() : existingOfficer.getEmail());
         existingOfficer.setPhone(officer.getPhone() != null && !officer.getPhone().isEmpty() ? officer.getPhone() : existingOfficer.getPhone());
         existingOfficer.setFullName(officer.getFullName() != null && !officer.getFullName().isEmpty() ? officer.getFullName() : existingOfficer.getFullName());
-        existingOfficer.setPassword(officer.getPassword() != null && !officer.getPassword().isEmpty() ? passwordEncoder.encode(officer.getPassword()) : passwordEncoder.encode(existingOfficer.getPassword()));
+        existingOfficer.setPassword(officer.getPassword() != null && !officer.getPassword().isEmpty() ? passwordEncoder.encode(officer.getPassword()) : existingOfficer.getPassword());
         existingOfficer.setRole(officer.getRole() != null ? officer.getRole() : existingOfficer.getRole());
         existingOfficer.setDepartment(officer.getDepartment() != null ? officer.getDepartment() : existingOfficer.getDepartment());
 

@@ -4,10 +4,12 @@ import io.nitishc.grievance_portal.model.Address;
 import io.nitishc.grievance_portal.model.Comment;
 import io.nitishc.grievance_portal.enums.Priority;
 import io.nitishc.grievance_portal.enums.Status;
+import io.nitishc.grievance_portal.model.GrievanceFile;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 @Data
@@ -32,5 +34,9 @@ public class GrievanceResponse {
 
     private List<Comment> comments;
 
-    private List<String> imageUrls;
+    private List<String> imageUrls = new ArrayList<>();
+
+    public void setImageUrls(List<GrievanceFile> files){
+        files.stream().map(file->file.getGrievance().getGrievanceId()+"/"+file.getId()).forEach(s->imageUrls.add(s));
+    }
 }
