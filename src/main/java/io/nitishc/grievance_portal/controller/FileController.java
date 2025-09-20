@@ -22,24 +22,24 @@ public class FileController {
         this.fileService = fileService;
     }
 
-    @PostMapping("/upload/{grievance-id}")
-    public ResponseEntity<String> addFile(@RequestParam("file") MultipartFile file, @PathVariable("grievance-id") long grievanceId) {
-        String userEmail = SecurityUtils.getCurrentUser().getUsername();
-        try {
-            String message = fileService.storeFile(file, grievanceId, userEmail);
-            return ResponseEntity.ok(message);
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().body("Could not upload file: " + e.getMessage());
+        @PostMapping("/upload/{grievance-id}")
+        public ResponseEntity<String> addFile(@RequestParam("file") MultipartFile file, @PathVariable("grievance-id") long grievanceId) {
+            String userEmail = SecurityUtils.getCurrentUser().getUsername();
+            try {
+                String message = fileService.storeFile(file, grievanceId, userEmail);
+                return ResponseEntity.ok(message);
+            } catch (Exception e) {
+                return ResponseEntity.badRequest().body("Could not upload file: " + e.getMessage());
+            }
+        }
+    
+        @GetMapping("/{grievance-id}/{file-id}")
+        public ResponseEntity<byte[]> getFile(@PathVariable("grievance-id") long grievanceId, @PathVariable("file-id") long fileId) throws CustomException {
+            GrievanceFile file = fileService.getFile(grievanceId, fileId);
+            return ResponseEntity
+                    .ok()
+                    .contentType(MediaType.parseMediaType(file.getFileType()))
+                    .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + file.getFileName() + "\"")
+                    .body(file.getImage());
         }
     }
-
-    @GetMapping("/{grievance-id}/{file-id}")
-    public ResponseEntity<byte[]> getFile(@PathVariable("grievance-id") long grievanceId, @PathVariable("file-id") long fileId) throws CustomException {
-        GrievanceFile file = fileService.getFile(grievanceId, fileId);
-        return ResponseEntity
-                .ok()
-                .contentType(MediaType.parseMediaType(file.getFileType()))
-                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + file.getFileName() + "\"")
-                .body(file.getImage());
-    }
-}
